@@ -2,23 +2,24 @@
 const BASE_PERCENTAGE = 10; // B2: 10%
 
 function getPACostPercentage(claimAmount: number, contingencyPercent: number): number {
-  // Define the ranges and their corresponding percentages
+  // Define the ranges and their corresponding percentages based on the chart
   const ranges = [
-    { min: 0, max: 100000, percentages: { '10-15': 60, '16-20': 55, '21-25': 50, '26+': 45 } },
-    { min: 100001, max: 250000, percentages: { '10-15': 55, '16-20': 50, '21-25': 45, '26+': 40 } },
-    { min: 250001, max: 500000, percentages: { '10-15': 50, '16-20': 45, '21-25': 40, '26+': 35 } },
-    { min: 500001, max: 1000000, percentages: { '10-15': 45, '16-20': 40, '21-25': 35, '26+': 30 } },
-    { min: 1000001, max: Infinity, percentages: { '10-15': 40, '16-20': 35, '21-25': 30, '26+': 25 } }
+    { min: 0, max: 99999.99, percentages: { '<10': 40, '10-15': 50, '16-20': 55, '21-25': 60, '26+': 65 } },
+    { min: 100000, max: 249999.99, percentages: { '<10': 45, '10-15': 55, '16-20': 60, '21-25': 65, '26+': 70 } },
+    { min: 250000, max: 499999.99, percentages: { '<10': 50, '10-15': 60, '16-20': 65, '21-25': 70, '26+': 75 } },
+    { min: 500000, max: 999999.99, percentages: { '<10': 55, '10-15': 65, '16-20': 70, '21-25': 75, '26+': 80 } },
+    { min: 1000000, max: Infinity, percentages: { '<10': 60, '10-15': 70, '16-20': 75, '21-25': 80, '26+': 85 } }
   ];
 
   // Find the appropriate range for the claim amount
   const range = ranges.find(r => claimAmount >= r.min && claimAmount <= r.max);
 
-  // Determine which percentage bracket to use
+  // Determine which percentage bracket to use based on contingency percent
   let percentageBracket;
-  if (contingencyPercent <= 15) percentageBracket = '10-15';
-  else if (contingencyPercent > 15 && contingencyPercent <= 20) percentageBracket = '16-20';
-  else if (contingencyPercent > 20 && contingencyPercent <= 25) percentageBracket = '21-25';
+  if (contingencyPercent < 10) percentageBracket = '<10';
+  else if (contingencyPercent <= 15) percentageBracket = '10-15';
+  else if (contingencyPercent <= 20) percentageBracket = '16-20';
+  else if (contingencyPercent <= 25) percentageBracket = '21-25';
   else percentageBracket = '26+';
 
   return range ? range.percentages[percentageBracket] : 0;
