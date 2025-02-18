@@ -7,6 +7,10 @@ import { calculateResults } from "./utils/calculations";
 interface CalculationResult {
   paProfit: number;
   paPercentage: number;
+  paCostPercent: number;
+  contingencyAmount: number;
+  paCost: number;
+  minimumPaCost: number;
 }
 
 function App() {
@@ -34,6 +38,10 @@ function App() {
       setResult({
         paProfit: fullResult.paProfit,
         paPercentage: fullResult.paPercentage,
+        paCostPercent: fullResult.paCostPercent,
+        contingencyAmount: fullResult.contingencyAmount,
+        paCost: fullResult.paCost,
+        minimumPaCost: fullResult.minimumPaCost,
       });
     }
   };
@@ -81,6 +89,20 @@ function App() {
 
           {result && (
             <div className="mt-8 space-y-4 p-4 bg-yellow-50 rounded-lg">
+              {/* <ResultField
+                label="Contingency Amount"
+                value={result.contingencyAmount}
+              />
+              <ResultField
+                label="PA Cost %"
+                value={result.paCostPercent}
+                isPercentage
+              />
+              <ResultField label="PA Cost" value={result.paCost} />
+              <ResultField
+                label="Minimum PA Cost"
+                value={result.minimumPaCost}
+              /> */}
               <ResultField label="PA Profit" value={result.paProfit} />
               <ResultField
                 label="PA Percentage"

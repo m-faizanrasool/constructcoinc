@@ -16,7 +16,7 @@ function getPACostPercentage(claimAmount: number, contingencyPercent: number): n
 
   // Determine which percentage bracket to use
   let percentageBracket;
-  if (contingencyPercent >= 10 && contingencyPercent <= 15) percentageBracket = '10-15';
+  if (contingencyPercent <= 15) percentageBracket = '10-15';
   else if (contingencyPercent > 15 && contingencyPercent <= 20) percentageBracket = '16-20';
   else if (contingencyPercent > 20 && contingencyPercent <= 25) percentageBracket = '21-25';
   else percentageBracket = '26+';
@@ -25,15 +25,30 @@ function getPACostPercentage(claimAmount: number, contingencyPercent: number): n
 }
 
 export function calculateResults(claimAmount: number, contingencyPercent: number) {
+  // Calculate contingency amount (e.g., 25000 * 20% = 5000)
   const contingencyAmount = claimAmount * (contingencyPercent / 100);
+
+  // Get PA cost percentage from the table
   const paCostPercent = getPACostPercentage(claimAmount, contingencyPercent);
+
+  // Calculate PA cost (e.g., 5000 * 50% = 2500)
   const paCost = contingencyAmount * (paCostPercent / 100);
+
+  // Apply minimum PA cost of 2700
   const minimumPaCost = Math.max(paCost, 2700);
+
+  // Calculate PA profit (e.g., 5000 - 3000 = 2000)
   const paProfit = contingencyAmount - minimumPaCost;
+
+  // Calculate PA percentage (e.g., 2000 / 5000 * 100 = 40%)
   const paPercentage = (paProfit / contingencyAmount) * 100;
 
+  // Return all values for transparency
   return {
-    paCost: minimumPaCost,
+    contingencyAmount,
+    paCostPercent,
+    paCost,
+    minimumPaCost,
     paProfit,
     paPercentage,
     k9Percentage: 100 - paPercentage
