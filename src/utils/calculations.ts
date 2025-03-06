@@ -1,7 +1,8 @@
 // Constants from Excel sheet
 const BASE_PERCENTAGE = 10; // B2: 10%
+const MINIMUM_K9_FEE = 2700; // This is a minimum for K9, not PA
 
-function getPACostPercentage(claimAmount: number, contingencyPercent: number): number {
+function getPASharePercentage(claimAmount: number, contingencyPercent: number): number {
   // Define the ranges and their corresponding percentages based on the chart
   const ranges = [
     { min: 0, max: 99999.99, percentages: { '<10': 40, '10-15': 50, '16-20': 55, '21-25': 60, '26+': 65 } },
@@ -26,32 +27,44 @@ function getPACostPercentage(claimAmount: number, contingencyPercent: number): n
 }
 
 export function calculateResults(claimAmount: number, contingencyPercent: number) {
-  // Calculate contingency amount (e.g., 25000 * 20% = 5000)
+  // Calculate contingency amount (e.g., 100000 * 10% = 10000)
   const contingencyAmount = claimAmount * (contingencyPercent / 100);
 
-  // Get PA cost percentage from the table
-  const paCostPercent = getPACostPercentage(claimAmount, contingencyPercent);
+  // Get PA share percentage directly from the table
+  const initialPaSharePercent = getPASharePercentage(claimAmount, contingencyPercent);
 
-  // Calculate PA cost (e.g., 5000 * 50% = 2500)
-  const paCost = contingencyAmount * (paCostPercent / 100);
+  // Calculate initial PA share amount
+  let paShare = contingencyAmount * (initialPaSharePercent / 100);
 
-  // Apply minimum PA cost of 2700
-  const minimumPaCost = Math.max(paCost, 2700);
+  // Calculate initial K9 share amount
+  let k9Share = contingencyAmount - paShare;
 
-  // Calculate PA profit (e.g., 5000 - 3000 = 2000)
-  const paProfit = contingencyAmount - minimumPaCost;
+  // Store initial values for detailed steps
+  const initialPaShare = paShare;
+  const initialK9Share = k9Share;
 
-  // Calculate PA percentage (e.g., 2000 / 5000 * 100 = 40%)
-  const paPercentage = (paProfit / contingencyAmount) * 100;
+  // Apply minimum K9 fee rule
+  if (k9Share < MINIMUM_K9_FEE && contingencyAmount > MINIMUM_K9_FEE) {
+    // If K9 share would be less than minimum fee but contingency can cover it
+    k9Share = MINIMUM_K9_FEE;
+    // Recalculate PA share
+    paShare = contingencyAmount - MINIMUM_K9_FEE;
+  }
 
-  // Return all values for transparency
+  // Calculate final percentages based on actual amounts
+  const paSharePercent = (paShare / contingencyAmount) * 100;
+  const k9SharePercent = (k9Share / contingencyAmount) * 100;
+
+  // Return all values including initial values for detailed steps
   return {
     contingencyAmount,
-    paCostPercent,
-    paCost,
-    minimumPaCost,
-    paProfit,
-    paPercentage,
-    k9Percentage: 100 - paPercentage
+    initialPaSharePercent,
+    initialPaShare,
+    initialK9Share,
+    paSharePercent,
+    paShare,
+    k9SharePercent,
+    k9Share,
+    minimumK9Fee: MINIMUM_K9_FEE
   };
 }
