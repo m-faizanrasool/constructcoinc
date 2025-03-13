@@ -149,142 +149,117 @@ function App() {
                 </button>
 
                 {showDetailedSteps && (
-                  <div className="mt-2 p-4 bg-white border border-gray-200 rounded-lg space-y-3 text-sm">
-                    <div className="grid grid-cols-2 gap-2">
-                      <span className="text-gray-600">Claim Amount:</span>
-                      <span className="font-medium">
-                        ${parseFloat(inputs.claimAmount).toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <span className="text-gray-600">
-                        Contingency Percentage:
-                      </span>
-                      <span className="font-medium">
-                        {parseFloat(inputs.contingencyPercent)}%
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <span className="text-gray-600">Contingency Amount:</span>
-                      <span className="font-medium">
-                        $
+                  <div className="mt-2 p-4 bg-white border border-gray-200 rounded-lg text-sm">
+                    <h3 className="font-semibold text-gray-800 mb-3">
+                      Calculation Summary
+                    </h3>
+
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <p className="text-gray-700 leading-relaxed">
+                        Based on a $
+                        {parseFloat(inputs.claimAmount).toLocaleString()} claim
+                        settlement with a{" "}
+                        {parseFloat(inputs.contingencyPercent)}% contingency
+                        fee, the gross payout amount is $
                         {result.contingencyAmount.toLocaleString("en-US", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <span className="text-gray-600">
-                        Initial PA Percentage:
-                      </span>
-                      <span className="font-medium">
-                        {result.initialPaSharePercent}%
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <span className="text-gray-600">Initial PA Share:</span>
-                      <span className="font-medium">
-                        $
-                        {result.initialPaShare?.toLocaleString("en-US", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <span className="text-gray-600">Initial K9 Share:</span>
-                      <span className="font-medium">
-                        $
-                        {result.initialK9Share?.toLocaleString("en-US", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <span className="text-gray-600">Minimum K9 Fee:</span>
-                      <span className="font-medium">
-                        $
-                        {result.minimumK9Fee?.toLocaleString("en-US", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
-                      </span>
+                        .
+                        <br />
+                        {result.initialK9Share &&
+                        result.minimumK9Fee &&
+                        result.initialK9Share < result.minimumK9Fee ? (
+                          <>
+                            Based on the fee structure, the PA's initial share
+                            is {result.initialPaSharePercent}% ($
+                            {result.initialPaShare?.toLocaleString("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
+                            ). Incorporating the minimum $
+                            {result.minimumK9Fee.toLocaleString()} K9 fee, the
+                            PA's share would be $
+                            {result.paShare.toLocaleString("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}{" "}
+                            ($
+                            {result.contingencyAmount.toLocaleString("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}{" "}
+                            - ${result.minimumK9Fee.toLocaleString()})
+                          </>
+                        ) : (
+                          <>
+                            Based on the fee structure, the PA's share is{" "}
+                            {result.initialPaSharePercent}% ($
+                            {result.initialPaShare?.toLocaleString("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
+                            ). This results in a final PA share of $
+                            {result.paShare.toLocaleString("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}{" "}
+                            and K9 share of $
+                            {result.k9Share.toLocaleString("en-US", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}
+                            .
+                          </>
+                        )}
+                      </p>
                     </div>
 
-                    {result.initialK9Share &&
-                      result.minimumK9Fee &&
-                      result.initialK9Share < result.minimumK9Fee && (
-                        <div className="py-2 px-3 bg-amber-50 border-l-4 border-amber-400 rounded">
-                          <p className="text-amber-800">
-                            Since K9's initial share ($
-                            {result.initialK9Share.toLocaleString("en-US", {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            })}
-                            ) is less than the minimum fee ($
-                            {result.minimumK9Fee.toLocaleString("en-US", {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            })}
-                            ), the minimum fee is applied.
-                          </p>
+                    {/* Simple results table */}
+                    <div className="mt-4 p-4 bg-green-50 rounded-lg">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="font-medium text-gray-700">
+                          Contingency Amount:
                         </div>
-                      )}
+                        <div className="font-semibold text-right">
+                          $
+                          {result.contingencyAmount.toLocaleString("en-US", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </div>
 
-                    <div className="h-px bg-gray-200 my-2"></div>
+                        <div className="font-medium text-gray-700">
+                          PA Share:
+                        </div>
+                        <div className="font-semibold text-green-700 text-right">
+                          $
+                          {result.paShare.toLocaleString("en-US", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}{" "}
+                          ({result.paSharePercent.toFixed(1)}%)
+                        </div>
 
-                    <div className="grid grid-cols-2 gap-2">
-                      <span className="text-gray-600">Final PA Share:</span>
-                      <span className="font-semibold text-green-700">
-                        $
-                        {result.paShare.toLocaleString("en-US", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <span className="text-gray-600">
-                        Final PA Percentage:
-                      </span>
-                      <span className="font-semibold text-green-700">
-                        {result.paSharePercent.toLocaleString("en-US", {
-                          minimumFractionDigits: 1,
-                          maximumFractionDigits: 1,
-                        })}
-                        %
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <span className="text-gray-600">Final K9 Share:</span>
-                      <span className="font-semibold text-blue-700">
-                        $
-                        {result.k9Share.toLocaleString("en-US", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <span className="text-gray-600">
-                        Final K9 Percentage:
-                      </span>
-                      <span className="font-semibold text-blue-700">
-                        {result.k9SharePercent.toLocaleString("en-US", {
-                          minimumFractionDigits: 1,
-                          maximumFractionDigits: 1,
-                        })}
-                        %
-                      </span>
+                        <div className="font-medium text-gray-700">
+                          K9 Share:
+                        </div>
+                        <div className="font-semibold text-blue-700 text-right">
+                          $
+                          {result.k9Share.toLocaleString("en-US", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}{" "}
+                          ({result.k9SharePercent.toFixed(1)}%)
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
               </div>
 
               {/* Info note about minimum fee */}
-              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              {/* <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <div className="flex items-start">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -304,7 +279,7 @@ function App() {
                     payout distribution.
                   </p>
                 </div>
-              </div>
+              </div> */}
             </>
           )}
         </div>
@@ -326,6 +301,19 @@ function App() {
               Click image to enlarge
             </p>
           </div>
+        </div>
+
+        {/* Add disclosure at the bottom of the page */}
+        <div className="mt-10 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+          <h3 className="font-medium text-gray-700 mb-2">Disclosure:</h3>
+          <p className="text-sm text-gray-600">
+            The K9 Public Adjusters payout calculator is for estimation purposes
+            only. Actual payouts may vary due to policy terms, carrier
+            deductions, additional expenses or other terms and conditions. K9
+            Public Adjusters is not liable for discrepancies between estimates
+            and final settlements. Public Adjusters should verify all figures
+            independently.
+          </p>
         </div>
       </div>
 
