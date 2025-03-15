@@ -201,26 +201,84 @@ function App() {
                         {result.initialK9Share &&
                         result.minimumK9Fee &&
                         result.initialK9Share < result.minimumK9Fee ? (
+                          partnershipType === "referral" ? (
+                            <>
+                              Based on the fee structure, for a claim referred
+                              by K9, the Public Adjuster's initial share is{" "}
+                              {(result.initialPaSharePercent / 2).toFixed(1)}%
+                              ($
+                              {(result.initialPaShare / 2)?.toLocaleString(
+                                "en-US",
+                                {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                }
+                              )}
+                              ) or 50% of an affiliate partner payment
+                              structure. Incorporating the minimum $
+                              {result.minimumK9Fee.toLocaleString()} K9 fee, the
+                              PA's share would be $
+                              {result.paShare.toLocaleString("en-US", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })}
+                              ($
+                              {result.contingencyAmount.toLocaleString(
+                                "en-US",
+                                {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                }
+                              )}{" "}
+                              - ${result.minimumK9Fee.toLocaleString()})
+                            </>
+                          ) : (
+                            <>
+                              Based on the fee structure, the PA's initial share
+                              is {result.initialPaSharePercent}% ($
+                              {result.initialPaShare?.toLocaleString("en-US", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })}
+                              ). Incorporating the minimum $
+                              {result.minimumK9Fee.toLocaleString()} K9 fee, the
+                              PA's share would be $
+                              {result.paShare.toLocaleString("en-US", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })}
+                              ($
+                              {result.contingencyAmount.toLocaleString(
+                                "en-US",
+                                {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                }
+                              )}{" "}
+                              - ${result.minimumK9Fee.toLocaleString()})
+                            </>
+                          )
+                        ) : partnershipType === "referral" ? (
                           <>
-                            Based on the fee structure, the PA's initial share
-                            is {result.initialPaSharePercent}% ($
-                            {result.initialPaShare?.toLocaleString("en-US", {
+                            Based on the fee structure, for a claim referred by
+                            K9, the Public Adjuster's share is{" "}
+                            {result.paSharePercent.toFixed(1)}% ($
+                            {result.paShare?.toLocaleString("en-US", {
                               minimumFractionDigits: 2,
                               maximumFractionDigits: 2,
                             })}
-                            ). Incorporating the minimum $
-                            {result.minimumK9Fee.toLocaleString()} K9 fee, the
-                            PA's share would be $
+                            ) or 50% of an affiliate partner payment structure.
+                            This results in a final PA share of $
                             {result.paShare.toLocaleString("en-US", {
                               minimumFractionDigits: 2,
                               maximumFractionDigits: 2,
                             })}{" "}
-                            ($
-                            {result.contingencyAmount.toLocaleString("en-US", {
+                            and K9 share of $
+                            {result.k9Share.toLocaleString("en-US", {
                               minimumFractionDigits: 2,
                               maximumFractionDigits: 2,
-                            })}{" "}
-                            - ${result.minimumK9Fee.toLocaleString()})
+                            })}
+                            .
                           </>
                         ) : (
                           <>
