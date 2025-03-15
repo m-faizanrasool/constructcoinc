@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Calculator,
   DollarSign,
@@ -30,22 +30,20 @@ function App() {
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showDetailedSteps, setShowDetailedSteps] = useState(false);
+  const [partnershipType, setPartnershipType] = useState<
+    "affiliate" | "referral"
+  >("affiliate");
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setInputs((prev) => ({ ...prev, [name]: value }));
-
-    const claimAmount =
-      name === "claimAmount"
-        ? parseFloat(value) || 0
-        : parseFloat(inputs.claimAmount) || 0;
-    const contingencyPercent =
-      name === "contingencyPercent"
-        ? parseFloat(value) || 0
-        : parseFloat(inputs.contingencyPercent) || 0;
+  useEffect(() => {
+    const claimAmount = parseFloat(inputs.claimAmount) || 0;
+    const contingencyPercent = parseFloat(inputs.contingencyPercent) || 0;
 
     if (claimAmount && contingencyPercent) {
-      const fullResult = calculateResults(claimAmount, contingencyPercent);
+      const fullResult = calculateResults(
+        claimAmount,
+        contingencyPercent,
+        partnershipType
+      );
       setResult({
         contingencyAmount: fullResult.contingencyAmount,
         paSharePercent: fullResult.paSharePercent,
@@ -58,6 +56,11 @@ function App() {
         minimumK9Fee: fullResult.minimumK9Fee,
       });
     }
+  }, [partnershipType, inputs.claimAmount, inputs.contingencyPercent]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setInputs((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -99,6 +102,34 @@ function App() {
               step="0.1"
               formatNumber={false}
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Partnership Type
+            </label>
+            <div className="flex space-x-4">
+              <button
+                className={`w-1/2 px-4 py-2 rounded-lg ${
+                  partnershipType === "affiliate"
+                    ? "bg-indigo-600 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+                onClick={() => setPartnershipType("affiliate")}
+              >
+                Affiliate Partner
+              </button>
+              <button
+                className={`w-1/2 px-4 py-2 rounded-lg ${
+                  partnershipType === "referral"
+                    ? "bg-indigo-600 text-white"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+                onClick={() => setPartnershipType("referral")}
+              >
+                Referral Partner
+              </button>
+            </div>
           </div>
 
           {result && (
@@ -291,9 +322,15 @@ function App() {
           </h2>
           <div className="bg-white p-4 rounded-lg shadow-sm">
             <img
-              src="/assets/pricing-graph.jpg"
-              alt="Fee Structure Graph"
-              className="w-full h-auto cursor-pointer"
+              src={
+                partnershipType === "affiliate"
+                  ? "/assets/pricing-graph.jpg"
+                  : "/assets/pricing-graph-referral.webp"
+              }
+              alt={`${
+                partnershipType === "affiliate" ? "Affiliate" : "Referral"
+              } Fee Structure Graph`}
+              className="w-full h-[150px] cursor-pointer"
               onClick={() => setIsModalOpen(true)}
               style={{ maxHeight: "400px", objectFit: "contain" }}
             />
@@ -326,7 +363,10 @@ function App() {
           <div className="relative max-w-5xl bg-white rounded-lg overflow-hidden">
             {/* Header with close button */}
             <div className="flex justify-between items-center bg-gray-100 p-3 border-b">
-              <h3 className="font-medium text-gray-800">Fee Structure Graph</h3>
+              <h3 className="font-medium text-gray-800">
+                {partnershipType === "affiliate" ? "Affiliate" : "Referral"} Fee
+                Structure Graph
+              </h3>
               <button
                 className="text-gray-500 hover:text-gray-700 focus:outline-none"
                 onClick={(e) => {
@@ -354,8 +394,14 @@ function App() {
             {/* Image container */}
             <div className="p-4 bg-white">
               <img
-                src="/assets/pricing-graph.jpg"
-                alt="Fee Structure Graph (Enlarged)"
+                src={
+                  partnershipType === "affiliate"
+                    ? "/assets/pricing-graph.jpg"
+                    : "/assets/pricing-graph-referral.webp"
+                }
+                alt={`${
+                  partnershipType === "affiliate" ? "Affiliate" : "Referral"
+                } Fee Structure Graph`}
                 className="max-w-full max-h-[80vh] object-contain mx-auto"
                 onClick={(e) => e.stopPropagation()}
               />

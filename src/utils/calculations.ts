@@ -26,7 +26,11 @@ function getPASharePercentage(claimAmount: number, contingencyPercent: number): 
   return range ? range.percentages[percentageBracket] : 0;
 }
 
-export function calculateResults(claimAmount: number, contingencyPercent: number) {
+export function calculateResults(
+  claimAmount: number,
+  contingencyPercent: number,
+  partnershipType: 'affiliate' | 'referral' = 'affiliate'
+) {
   // Calculate contingency amount (e.g., 100000 * 10% = 10000)
   const contingencyAmount = claimAmount * (contingencyPercent / 100);
 
@@ -35,6 +39,11 @@ export function calculateResults(claimAmount: number, contingencyPercent: number
 
   // Calculate initial PA share amount
   let paShare = contingencyAmount * (initialPaSharePercent / 100);
+
+  // If it's a referral partner, reduce the share by 50%
+  if (partnershipType === 'referral') {
+    paShare = paShare * 0.5;
+  }
 
   // Calculate initial K9 share amount
   let k9Share = contingencyAmount - paShare;
