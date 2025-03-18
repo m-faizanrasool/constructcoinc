@@ -221,7 +221,7 @@ function App() {
                               {result.paShare.toLocaleString("en-US", {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2,
-                              })}
+                              })}{" "}
                               ($
                               {result.contingencyAmount.toLocaleString(
                                 "en-US",
@@ -230,7 +230,8 @@ function App() {
                                   maximumFractionDigits: 2,
                                 }
                               )}{" "}
-                              - ${result.minimumK9Fee.toLocaleString()})
+                              - ${result.minimumK9Fee.toLocaleString()}) or{" "}
+                              {result.paSharePercent.toFixed(1)}%
                             </>
                           ) : (
                             <>
@@ -246,7 +247,7 @@ function App() {
                               {result.paShare.toLocaleString("en-US", {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2,
-                              })}
+                              })}{" "}
                               ($
                               {result.contingencyAmount.toLocaleString(
                                 "en-US",
@@ -255,7 +256,8 @@ function App() {
                                   maximumFractionDigits: 2,
                                 }
                               )}{" "}
-                              - ${result.minimumK9Fee.toLocaleString()})
+                              - ${result.minimumK9Fee.toLocaleString()}) or{" "}
+                              {result.paSharePercent.toFixed(1)}%
                             </>
                           )
                         ) : partnershipType === "referral" ? (
