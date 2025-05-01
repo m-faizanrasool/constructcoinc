@@ -32,7 +32,7 @@ function App() {
   const [showDetailedSteps, setShowDetailedSteps] = useState(false);
   const [partnershipType, setPartnershipType] = useState<
     "affiliate" | "referral"
-  >("affiliate");
+  >("referral");
 
   useEffect(() => {
     const claimAmount = parseFloat(inputs.claimAmount) || 0;
@@ -104,7 +104,7 @@ function App() {
             />
           </div>
 
-          <div>
+          <div className="hidden">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Partnership Type
             </label>
